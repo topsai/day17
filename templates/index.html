@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>范斯特主机管理系统</title>
+    <link rel="stylesheet" type="text/css" href="/static/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/static/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="/static/easyui/demo/demo.css">
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
+    Welcome
+</div>
+<div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">
+    west content
+</div>
+<div data-options="region:'east',split:true,collapsed:true,title:'East'" style="width:100px;padding:10px;">
+    east region
+</div>
+<div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:10px;">
+    版权所有
+</div>
+<div data-options="region:'center',title:'Center'">
+    <table class="easyui-datagrid" title="Basic DataGrid" style="width:700px;height:250px">
+        <thead>
+        <tr>
+            <th data-options="field:'itemid',width:80">Item ID</th>
+            <th data-options="field:'productid',width:100">Product</th>
+            <th data-options="field:'listprice',width:80,align:'right'">List Price</th>
+            <th data-options="field:'unitcost',width:80,align:'right'">Unit Cost</th>
+            <th data-options="field:'attr1',width:250">Attribute</th>
+            <th data-options="field:'status',width:60,align:'center'">Status</th>
+        </tr>
+
+        </thead>
+    </table>
+</div>
+</body>
+</html>
