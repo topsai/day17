@@ -19,5 +19,9 @@ from hostmanager import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^login/', views.index),
+    url(r'^login', views.login),
+    url(r'^index', views.index),
+    url(r'^add_host', views.add_host),
+    url(r'^host_info', views.host_info),
+
 ]

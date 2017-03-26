@@ -8,6 +8,25 @@
     <link rel="stylesheet" type="text/css" href="/static/easyui/demo/demo.css">
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
+    <style>
+        .fix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #4b6075;
+            z-index: 999;
+
+        }
+        #fix1 input{
+
+        }
+        .hid{
+            display: none;
+        }
+
+    </style>
 </head>
 <body class="easyui-layout">
 <div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
@@ -21,21 +40,125 @@
 </div>
 <div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:10px;">
     版权所有
+    {{ host_list }}
 </div>
 <div data-options="region:'center',title:'Center'">
-    <table class="easyui-datagrid" title="Basic DataGrid" style="width:700px;height:250px">
-        <thead>
-        <tr>
-            <th data-options="field:'itemid',width:80">Item ID</th>
-            <th data-options="field:'productid',width:100">Product</th>
-            <th data-options="field:'listprice',width:80,align:'right'">List Price</th>
-            <th data-options="field:'unitcost',width:80,align:'right'">Unit Cost</th>
-            <th data-options="field:'attr1',width:250">Attribute</th>
-            <th data-options="field:'status',width:60,align:'center'">Status</th>
-        </tr>
+    <div id="fix" class="fix hid">
+        <div style="margin-top: 200px;width: 100px; margin-left: 40%">
 
-        </thead>
+            <form action="/add_host" method="post">
+                <label><input type="text" name="name" placeholder="主机名"></label>
+                <label><input type="text" name="ip" placeholder="IP"></label>
+                <label><input type="text" name="port" placeholder="端口"></label>
+                <label><input type="text" name="user" placeholder="主机名"></label>
+                <button type="submit">确定</button>
+                <button id="quit" type="button">取消</button>
+            </form>
+        </div>
+    </div>
+    <div id="fix1" class="fix hid">
+        <div style="margin-top: 200px;width: 100px; margin-left: 40%">
+
+            <div>
+                <label><input type="text" id="id" disabled></label>
+                <label><input type="text" id="name" disabled></label>
+                <label><input type="text" id="ip" disabled></label>
+                <label><input type="text" id="port" disabled></label>
+                <button type="button" id="ok">ok</button>
+            </div>
+        </div>
+    </div>
+    <span>添加主机</span><button class="add_host">+</button>
+{#    <table class="easyui-datagrid" title="Basic DataGrid" style="width:700px;height:250px">#}
+{#        <thead>#}
+{#        <tr>#}
+{#            <th data-options="field:'itemid',width:80">ID</th>#}
+{#            <th data-options="field:'productid',width:100">Hostname</th>#}
+{#            <th data-options="field:'listprice',width:80,align:'right'">Host Ip</th>#}
+{#            <th data-options="field:'unitcost',width:80,align:'right'">Host Port</th>#}
+{#            <th data-options="field:'attr1',width:250">Attribute</th>#}
+{#            <th data-options="field:'status',width:60,align:'center'">Status</th>#}
+{#        </tr>#}
+{#        {% for i in host_list %}#}
+{#            <tr>#}
+{#                <th>1{{ i.id }}</th>#}
+{#                <th>2{{ i.name }}</th>#}
+{#                <th>3{{ i.ip }}</th>#}
+{#                <th>4{{ i.port }}</th>#}
+{#                <th>5{{ i.user }}</th>#}
+{#                <th>{{ i }}</th>#}
+{##}
+{#            </tr>#}
+{#        {% endfor %}#}
+{##}
+{#        <tr>#}
+{#                <th>1{{ host_list }}</th>#}
+{#                <th>2</th>#}
+{#                <th>3</th>#}
+{#                <th>4</th>#}
+{#                <th>5</th>#}
+{##}
+{#            </tr>#}
+{#        </thead>#}
+{#    </table>#}
+<div>{{ status }}</div>
+    <table>
+    <tr>
+                <td>id</td>
+                <td>name</td>
+                <td>ip</td>
+                <td>port</td>
+                <td>user</td>
+
+            </tr>
+        {% for i in host_list %}
+            <tr>
+                <td>{{ i.id }}</td>
+                <td>{{ i.name }}</td>
+                <td>{{ i.ip }}</td>
+                <td>{{ i.port }}</td>
+                <td>{{ i.user }}</td>
+                <td ><div class="host_info" host_id={{ i.id }}>详细</div></td>
+
+            </tr>
+        {% endfor %}
     </table>
 </div>
+<script>
+    $(".add_host").click(function () {
+        $("#fix").removeClass("hid")
+    });
+    $("#quit").click(function () {
+        $("#fix").addClass("hid")
+    });
+    $("#ok").click(function () {
+        $("#id").val("");
+        $("#name").val("");
+        $("#ip").val("");
+        $("#port").val("");
+        $("#fix1").addClass("hid");
+    });
+    $(".host_info").click(function () {
+        console.log($(this).attr("host_id"));
+        var id = $(this).attr("host_id");
+        $.ajax({
+            url:"/host_info",
+            data:{id:id},
+            type:'POST',
+            success:function(data){
+                var d = JSON.parse(data);
+                $("#id").val(d["id"]);
+                $("#name").val(d["name"]);
+                $("#ip").val(d["ip"]);
+                $("#port").val(d["port"]);
+                $("#fix1").removeClass("hid");
+            },
+            error:function(){
+         
+            }
+         });
+    });
+
+</script>
 </body>
 </html>
