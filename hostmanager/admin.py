@@ -5,3 +5,5 @@ from django.contrib import admin
 from hostmanager import models
 admin.site.register(models.User)
 admin.site.register(models.Host)
+admin.site.register(models.HostGroup)
+

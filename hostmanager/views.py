@@ -13,7 +13,7 @@ def index(request):
         print(i.id, i.name, i.ip, i.port, i.user)
         host_list.append({"id": i.id, "name": i.name, "ip": i.ip, "port": i.port, "user": i.user})
     print(host_list)
-    return render(request,'index.html', {"host_list": host_list})
+    return render(request, 'index.html', {"host_list": host_list})
 
 
 def login(request):
@@ -42,3 +42,20 @@ def host_info(request):
     send_data = {"id": data.id, "name": data.name, "ip": data.ip, "port": data.port, "user": data.user}
     return HttpResponse(json.dumps(send_data))
 
+
+def host_del(request):
+    models.Host.objects.filter(id=request.POST.get('id')).first().delete()
+    return HttpResponse(json.dumps({"status": "ok"}))
+
+
+def host_edit(request):
+    id = request.POST.get("id")
+    name = request.POST.get("name")
+    ip = request.POST.get("ip")
+    port = request.POST.get("port")
+    obj = models.Host.objects.filter(id=id).first()
+    obj.name = name
+    obj.ip = ip
+    obj.port = port
+    obj.save()
+    return HttpResponse("ok")

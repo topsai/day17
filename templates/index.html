@@ -33,21 +33,22 @@
     Welcome
 </div>
 <div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">
-    west content
+    <div>主机信息</div>
 </div>
 <div data-options="region:'east',split:true,collapsed:true,title:'East'" style="width:100px;padding:10px;">
     east region
 </div>
 <div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:10px;">
     版权所有
-    {{ host_list }}
+
 </div>
 <div data-options="region:'center',title:'Center'">
+    <div id="status" style="background-color: red">{{ status }}</div>
     <div id="fix" class="fix hid">
         <div style="margin-top: 200px;width: 100px; margin-left: 40%">
-
+            <div class="status"></div>
             <form action="/add_host" method="post">
-                <label><input type="text" name="name" placeholder="主机名"></label>
+                <label><input type="text" name="name" placeholder="主机名" ></label>
                 <label><input type="text" name="ip" placeholder="IP"></label>
                 <label><input type="text" name="port" placeholder="端口"></label>
                 <label><input type="text" name="user" placeholder="主机名"></label>
@@ -57,50 +58,20 @@
         </div>
     </div>
     <div id="fix1" class="fix hid">
-        <div style="margin-top: 200px;width: 100px; margin-left: 40%">
+        <div style="margin-top: 200px;width: 250px; margin-left: 40%">
 
             <div>
-                <label><input type="text" id="id" disabled></label>
-                <label><input type="text" id="name" disabled></label>
-                <label><input type="text" id="ip" disabled></label>
-                <label><input type="text" id="port" disabled></label>
-                <button type="button" id="ok">ok</button>
+                <div>ID<input type="text" id="id" ></div>
+                <div>NAME<input type="text" id="name" ></div>
+                <div>IP<input type="text" id="ip" ></div>
+                <div>PORT<input type="text" id="port" ></div>
+                <button type="button" id="close">关闭</button>
+                <button type="button" id="edit">修改</button>
+                <button type="button" id="ok">确定</button>
             </div>
         </div>
     </div>
     <span>添加主机</span><button class="add_host">+</button>
-{#    <table class="easyui-datagrid" title="Basic DataGrid" style="width:700px;height:250px">#}
-{#        <thead>#}
-{#        <tr>#}
-{#            <th data-options="field:'itemid',width:80">ID</th>#}
-{#            <th data-options="field:'productid',width:100">Hostname</th>#}
-{#            <th data-options="field:'listprice',width:80,align:'right'">Host Ip</th>#}
-{#            <th data-options="field:'unitcost',width:80,align:'right'">Host Port</th>#}
-{#            <th data-options="field:'attr1',width:250">Attribute</th>#}
-{#            <th data-options="field:'status',width:60,align:'center'">Status</th>#}
-{#        </tr>#}
-{#        {% for i in host_list %}#}
-{#            <tr>#}
-{#                <th>1{{ i.id }}</th>#}
-{#                <th>2{{ i.name }}</th>#}
-{#                <th>3{{ i.ip }}</th>#}
-{#                <th>4{{ i.port }}</th>#}
-{#                <th>5{{ i.user }}</th>#}
-{#                <th>{{ i }}</th>#}
-{##}
-{#            </tr>#}
-{#        {% endfor %}#}
-{##}
-{#        <tr>#}
-{#                <th>1{{ host_list }}</th>#}
-{#                <th>2</th>#}
-{#                <th>3</th>#}
-{#                <th>4</th>#}
-{#                <th>5</th>#}
-{##}
-{#            </tr>#}
-{#        </thead>#}
-{#    </table>#}
 <div>{{ status }}</div>
     <table>
     <tr>
@@ -119,7 +90,7 @@
                 <td>{{ i.port }}</td>
                 <td>{{ i.user }}</td>
                 <td ><div class="host_info" host_id={{ i.id }}>详细</div></td>
-
+                <td ><div class="host_del" host_id={{ i.id }}>删除</div></td>
             </tr>
         {% endfor %}
     </table>
@@ -131,7 +102,7 @@
     $("#quit").click(function () {
         $("#fix").addClass("hid")
     });
-    $("#ok").click(function () {
+    $("#close").click(function () {
         $("#id").val("");
         $("#name").val("");
         $("#ip").val("");
@@ -147,10 +118,10 @@
             type:'POST',
             success:function(data){
                 var d = JSON.parse(data);
-                $("#id").val(d["id"]);
-                $("#name").val(d["name"]);
-                $("#ip").val(d["ip"]);
-                $("#port").val(d["port"]);
+                $("#id").val(d["id"]).prop("readonly", true);
+                $("#name").val(d["name"]).prop("readonly", true);
+                $("#ip").val(d["ip"]).prop("readonly", true);
+                $("#port").val(d["port"]).prop("readonly", true);
                 $("#fix1").removeClass("hid");
             },
             error:function(){
@@ -158,7 +129,60 @@
             }
          });
     });
-
+    $(".host_del").click(function () {
+        console.log($(this).attr("host_id"));
+        var id = $(this).attr("host_id");
+        var t = $(this);
+        $.ajax({
+            url:"/host_del",
+            data:{id:id},
+            type:'POST',
+            success:function(data){
+                var d = JSON.parse(data);
+                console.log(d);
+                if(d["status"] == "ok"){
+                    console.log("ok");
+                    console.log(t);
+                    t.parent().parent().remove();
+                    $("#status").text("删除成功！");
+                    setTimeout("empty_status()", 3000)
+                }
+            },
+            error:function(){
+         
+            }
+         });
+    });
+    $("#edit").click(function () {
+        $("#name").removeProp("readonly");
+        $("#ip").removeProp("readonly");
+        $("#port").removeProp("readonly");
+    });
+    $("#ok").click(function () {
+        var id = $("#id").val();
+        var name = $("#name").val();
+        var ip = $("#ip").val();
+        var port = $("#port").val();
+        $.ajax({
+            url:"/host_edit",
+            data:{id:id, name:name, ip:ip, port:port},
+            type:'POST',
+            success:function(data){
+                if(data=="ok"){
+                    $("#fix1").addClass("hid");
+                    $("#status").text("修改成功！");
+                    setTimeout("empty_status()", 3000)
+                }
+            },
+            error:function(){
+         
+            }
+         });
+    });
+    function empty_status() {
+        $("#status").text("");
+    }
+    setTimeout("empty_status()", 3000)
 </script>
 </body>
 </html>

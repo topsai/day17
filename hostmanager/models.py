@@ -19,3 +19,14 @@ class User(models.Model):
     name = models.CharField(max_length=30)
     pwd = models.CharField(max_length=60)
 
+    def __repr__(self):
+        return self.name
+
+
+class HostGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=30)
+
+    def __repr__(self):
+        return self.name
+

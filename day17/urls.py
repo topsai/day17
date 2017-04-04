@@ -23,5 +23,7 @@ urlpatterns = [
     url(r'^index', views.index),
     url(r'^add_host', views.add_host),
     url(r'^host_info', views.host_info),
+    url(r'^host_del', views.host_del),
+    url(r'^host_edit', views.host_edit),
 
 ]
