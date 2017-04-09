@@ -20,7 +20,15 @@ def index(request):
     uid = request.session.get("id")
     name = request.session.get("name")
     data = models.Host.objects.all()
-    return render(request, "index.html", {"host_list": data, "name": name})
+    data1 = models.User.objects.all()
+    return render(request, "index.html", {"host_list": data, "name": name, "user_list": data1})
+
+
+def select_host(request):
+    id = request.POST.get("id")
+    data = models.User.objects.filter(id=id).first()
+    data_all = models.Host.objects.all()
+    return HttpResponse({"all": data_all, "my": data})
 
 
 def add_user(request):
@@ -47,7 +55,7 @@ def login(request):
         obj = models.User.objects.filter(name=name, pwd=pwd).first()
         if obj:
             # auth = obj.ugroup.id
-            request.session["auth"] = obj.ugroup.id
+            request.session["auth"] = obj.ugrup.id
             request.session["name"] = name
             request.session["id"] = obj.id
             return redirect("/index")

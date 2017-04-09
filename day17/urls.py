@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^host_info', views.host_info),
     url(r'^host_del', views.host_del),
     url(r'^host_edit', views.host_edit),
+    url(r'^select_host', views.select_host),
     # url(r'^index-(\d)-(\d).html', views.test),
 
 ]

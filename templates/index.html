@@ -73,6 +73,10 @@
             </div>
         </div>
     </div>
+    <div id="fix2" class="fix hid">
+        <input type="text" >
+        <button onclick="fix2_exit()">取消</button>
+    </div>
     <div id="host_info" style="padding: 20px">
         <span>添加主机</span><button class="add_host">+</button>
         <div>{{ status }}</div>
@@ -99,32 +103,51 @@
         </table>
     </div>
     <div id="auth_option" class="hid">
-        <div style="padding: 20px;: 10px">
-            <button>添加用户</button>
-            <button>权限分配</button>
-            <button>主机分组</button>
-            <button></button>
+        <div id="auth_menu" style="padding: 20px;: 10px">
+            <button onclick="add_u()">添加用户</button>
+            <button onclick="auth_p()">权限分配</button>
+            <button onclick="host_g()">主机分组</button>
         </div>
-        <div id="add_user">
-            <div id="ok" class="hid">添加成功</div>
-            <form id="ad_user">
-                <div>用户名: <input name="name" type="text"></div>
-                <div>密码 :<input name="pwd" type="password"></div>
-                <div>
-                    用户类型 :
-                    <select name="type">
-                        <option value="1">管理员</option>
-                        <option value="2">普通用户</option>
-                    </select>
-                </div>
-                <div><button>确定</button></div>
-            </form>
+        <div style="padding: 20px">
+            <div id="add_user" class="hid">
+                <div id="ok" class="hid">添加成功</div>
+                <form id="ad_user">
+                    <div>用户名: <input name="name" type="text"></div>
+                    <div>密码 :<input name="pwd" type="password"></div>
+                    <div>
+                        用户类型 :
+                        <select name="type">
+                            <option value="1">管理员</option>
+                            <option value="2">普通用户</option>
+                        </select>
+                    </div>
+                    <div><button>确定</button></div>
+                </form>
 
+            </div>
+            <div id="auth_options" class="hid">
+                {% for i in user_list %}
+                    <div uid="{{ i.id }}">{{ i.name }} </div><button class="ff">管理</button>
+                {% endfor %}
+            </div>
+            <div id="host_group" class="hid">
+            </div>
         </div>
-
     </div>
 </div>
 <script>
+    function fix2_exit() {
+        $("#fix2").addClass("hid")
+    }
+    function add_u() {
+        $("#add_user").removeClass("hid").siblings().addClass("hid")
+    }
+    function auth_p() {
+        $("#auth_options").removeClass("hid").siblings().addClass("hid")
+    }
+    function host_g() {
+        $("#host_group").removeClass("hid").siblings().addClass("hid")
+    }
     $(".add_host").click(function () {
         $("#fix").removeClass("hid")
     });
@@ -211,7 +234,7 @@
     function empty_status() {
         $("#status").text("");
     }
-    setTimeout("empty_status()", 3000)
+    setTimeout("empty_status()", 3000);
     function exit() {
 
     }
@@ -235,6 +258,31 @@
             }
         });
         return false
+    });
+    $(".ff").click(function () {
+        $("#fix2").removeClass("hid").find("input").val($(this).prev("div").text());
+        var id = $(this).prev("div").attr("uid");
+        console.log(id);
+        $.ajax({
+            url:"/select_host",
+            type: "POST",
+            data:{"id":id},
+            success:function (data) {
+                console.log(typeof (data));
+                var all = data["all"];
+                var my = data["my"];
+                console.log(all);
+                console.log(my);
+                var s = document.createElement("select");
+                for(i in all){
+                    s.options.add(new Option(i.id, i.name));
+                }
+                document.getElementById("fix2").appendChild(s);
+
+            }
+        });
+
+
     });
 </script>
 </body>
