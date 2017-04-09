@@ -20,10 +20,13 @@ from hostmanager import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login', views.login),
-    url(r'^index', views.index),
+    url(r'^index$', views.index),
+    url(r'^exit', views.login_off),
     url(r'^add_host', views.add_host),
+    url(r'^add_user', views.add_user),
     url(r'^host_info', views.host_info),
     url(r'^host_del', views.host_del),
     url(r'^host_edit', views.host_edit),
+    # url(r'^index-(\d)-(\d).html', views.test),
 
 ]

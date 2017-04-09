@@ -26,14 +26,16 @@
             display: none;
         }
 
+
     </style>
 </head>
 <body class="easyui-layout">
 <div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
-    Welcome
+    Welcome: {{ name }} <a href="/exit">注销</a>
 </div>
-<div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">
-    <div>主机信息</div>
+<div id="menus" data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">
+    <div class="menu-active" id="m1">主机信息</div>
+    <div id="m2">权限管理</div>
 </div>
 <div data-options="region:'east',split:true,collapsed:true,title:'East'" style="width:100px;padding:10px;">
     east region
@@ -71,29 +73,56 @@
             </div>
         </div>
     </div>
-    <span>添加主机</span><button class="add_host">+</button>
-<div>{{ status }}</div>
-    <table>
-    <tr>
-                <td>id</td>
-                <td>name</td>
-                <td>ip</td>
-                <td>port</td>
-                <td>user</td>
-
-            </tr>
-        {% for i in host_list %}
+    <div id="host_info" style="padding: 20px">
+        <span>添加主机</span><button class="add_host">+</button>
+        <div>{{ status }}</div>
+        <table>
             <tr>
-                <td>{{ i.id }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.ip }}</td>
-                <td>{{ i.port }}</td>
-                <td>{{ i.user }}</td>
-                <td ><div class="host_info" host_id={{ i.id }}>详细</div></td>
-                <td ><div class="host_del" host_id={{ i.id }}>删除</div></td>
-            </tr>
-        {% endfor %}
-    </table>
+                    <td>id</td>
+                    <td>name</td>
+                    <td>ip</td>
+                    <td>port</td>
+                    <td>user</td>
+
+                </tr>
+            {% for i in host_list %}
+                <tr>
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.ip }}</td>
+                    <td>{{ i.port }}</td>
+                    <td>{{ i.user }}</td>
+                    <td ><div class="host_info" host_id={{ i.id }}>详细</div></td>
+                    <td ><div class="host_del" host_id={{ i.id }}>删除</div></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div id="auth_option" class="hid">
+        <div style="padding: 20px;: 10px">
+            <button>添加用户</button>
+            <button>权限分配</button>
+            <button>主机分组</button>
+            <button></button>
+        </div>
+        <div id="add_user">
+            <div id="ok" class="hid">添加成功</div>
+            <form id="ad_user">
+                <div>用户名: <input name="name" type="text"></div>
+                <div>密码 :<input name="pwd" type="password"></div>
+                <div>
+                    用户类型 :
+                    <select name="type">
+                        <option value="1">管理员</option>
+                        <option value="2">普通用户</option>
+                    </select>
+                </div>
+                <div><button>确定</button></div>
+            </form>
+
+        </div>
+
+    </div>
 </div>
 <script>
     $(".add_host").click(function () {
@@ -183,6 +212,30 @@
         $("#status").text("");
     }
     setTimeout("empty_status()", 3000)
+    function exit() {
+
+    }
+    $("#menus").children().click(function () {
+        $(this).attr("class","menu-active").siblings().removeClass("menu-active")
+        if ($(this).attr("id") == "m1"){
+            $("#host_info").removeClass("hid");
+            $("#auth_option").addClass("hid");
+        }else {
+            $("#host_info").addClass("hid");
+            $("#auth_option").removeClass("hid");
+        }
+    });
+    $("#ad_user").submit(function () {
+        $.ajax({
+            url: "/add_user",
+            data: $("#ad_user").serialize(),
+            type: "POST",
+            success:function () {
+                alert("添加成功")
+            }
+        });
+        return false
+    });
 </script>
 </body>
 </html>
