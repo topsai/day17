@@ -11,6 +11,7 @@ class Host(models.Model):
     users = models.CharField(max_length=30)
 
     class Meta:
+        db_table = "tablename"  # 定制表名
         verbose_name = "主机"
 
     def __str__(self):
