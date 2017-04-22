@@ -1,51 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>范斯特主机管理系统</title>
-    <link rel="stylesheet" type="text/css" href="/static/easyui/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="/static/easyui/themes/icon.css">
-    <link rel="stylesheet" type="text/css" href="/static/easyui/demo/demo.css">
-    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
-    <style>
-        .fix {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #4b6075;
-            z-index: 999;
+{% extends "base.html" %}
+　　{% block style %}
 
-        }
-        #fix1 input{
-
-        }
-        .hid{
-            display: none;
-        }
-
-
-    </style>
-</head>
-<body class="easyui-layout">
-<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
-    Welcome: {{ name }} <a href="/exit">注销</a>
-</div>
-<div id="menus" data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">
-    <div class="menu-active" id="m1">主机信息</div>
-    <div id="m2">权限管理</div>
-</div>
-<div data-options="region:'east',split:true,collapsed:true,title:'East'" style="width:100px;padding:10px;">
-    east region
-</div>
-<div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:10px;">
-    版权所有
-
-</div>
-<div data-options="region:'center',title:'Center'">
+    {% endblock %}
+{% block center %}
+    <h1 class="page-header">主机信息</h1>
     <div id="status" style="background-color: red">{{ status }}</div>
+    <button onclick="a_host()">添加</button>
     <div id="fix" class="fix hid">
         <div style="margin-top: 200px;width: 100px; margin-left: 40%">
             <div class="status"></div>
@@ -59,231 +19,57 @@
             </form>
         </div>
     </div>
-    <div id="fix1" class="fix hid">
-        <div style="margin-top: 200px;width: 250px; margin-left: 40%">
 
-            <div>
-                <div>ID<input type="text" id="id" ></div>
-                <div>NAME<input type="text" id="name" ></div>
-                <div>IP<input type="text" id="ip" ></div>
-                <div>PORT<input type="text" id="port" ></div>
-                <button type="button" id="close">关闭</button>
-                <button type="button" id="edit">修改</button>
-                <button type="button" id="ok">确定</button>
-            </div>
-        </div>
-    </div>
     <div id="fix2" class="fix hid">
         <input type="text" >
         <button onclick="fix2_exit()">取消</button>
     </div>
-    <div id="host_info" style="padding: 20px">
-        <span>添加主机</span><button class="add_host">+</button>
-        <div>{{ status }}</div>
-        <table>
-            <tr>
-                    <td>id</td>
-                    <td>name</td>
-                    <td>ip</td>
-                    <td>port</td>
-                    <td>user</td>
+    <div id="host_info" style="padding: 20px;position: relative;">
+    <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            主机信息
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>NAME</th>
+                                        <th>IP</th>
+                                        <th>PORT</th>
+                                        <th>USER</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in host_list %}
+                                <tr>
+                                    <td>{{ i.id }}</td>
+                                    <td>{{ i.name }}</td>
+                                    <td>{{ i.ip }}</td>
+                                    <td>{{ i.port }}</td>
+                                    <td ><div class="host_info" host_id={{ i.id }}>详细</div>
+                                    <div class="host_del" host_id={{ i.id }}>删除</div></td>
+                                </tr>
+                            {% endfor %}
+                                </tbody>
+                            </table>
+                            <!-- /.table-responsive -->
 
-                </tr>
-            {% for i in host_list %}
-                <tr>
-                    <td>{{ i.id }}</td>
-                    <td>{{ i.name }}</td>
-                    <td>{{ i.ip }}</td>
-                    <td>{{ i.port }}</td>
-                    <td>{{ i.user }}</td>
-                    <td ><div class="host_info" host_id={{ i.id }}>详细</div></td>
-                    <td ><div class="host_del" host_id={{ i.id }}>删除</div></td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-    <div id="auth_option" class="hid">
-        <div id="auth_menu" style="padding: 20px;: 10px">
-            <button onclick="add_u()">添加用户</button>
-            <button onclick="auth_p()">权限分配</button>
-            <button onclick="host_g()">主机分组</button>
-        </div>
-        <div style="padding: 20px">
-            <div id="add_user" class="hid">
-                <div id="ok" class="hid">添加成功</div>
-                <form id="ad_user">
-                    <div>用户名: <input name="name" type="text"></div>
-                    <div>密码 :<input name="pwd" type="password"></div>
-                    <div>
-                        用户类型 :
-                        <select name="type">
-                            <option value="1">管理员</option>
-                            <option value="2">普通用户</option>
-                        </select>
+                        </div>
+                        <!-- /.panel-body -->
                     </div>
-                    <div><button>确定</button></div>
-                </form>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
 
-            </div>
-            <div id="auth_options" class="hid">
-                {% for i in user_list %}
-                    <div uid="{{ i.id }}">{{ i.name }} </div><button class="ff">管理</button>
-                {% endfor %}
-            </div>
-            <div id="host_group" class="hid">
-            </div>
-        </div>
+
     </div>
-</div>
-<script>
-    function fix2_exit() {
-        $("#fix2").addClass("hid")
-    }
-    function add_u() {
-        $("#add_user").removeClass("hid").siblings().addClass("hid")
-    }
-    function auth_p() {
-        $("#auth_options").removeClass("hid").siblings().addClass("hid")
-    }
-    function host_g() {
-        $("#host_group").removeClass("hid").siblings().addClass("hid")
-    }
-    $(".add_host").click(function () {
-        $("#fix").removeClass("hid")
-    });
-    $("#quit").click(function () {
-        $("#fix").addClass("hid")
-    });
-    $("#close").click(function () {
-        $("#id").val("");
-        $("#name").val("");
-        $("#ip").val("");
-        $("#port").val("");
-        $("#fix1").addClass("hid");
-    });
-    $(".host_info").click(function () {
-        console.log($(this).attr("host_id"));
-        var id = $(this).attr("host_id");
-        $.ajax({
-            url:"/host_info",
-            data:{id:id},
-            type:'POST',
-            success:function(data){
-                var d = JSON.parse(data);
-                $("#id").val(d["id"]).prop("readonly", true);
-                $("#name").val(d["name"]).prop("readonly", true);
-                $("#ip").val(d["ip"]).prop("readonly", true);
-                $("#port").val(d["port"]).prop("readonly", true);
-                $("#fix1").removeClass("hid");
-            },
-            error:function(){
-         
-            }
-         });
-    });
-    $(".host_del").click(function () {
-        console.log($(this).attr("host_id"));
-        var id = $(this).attr("host_id");
-        var t = $(this);
-        $.ajax({
-            url:"/host_del",
-            data:{id:id},
-            type:'POST',
-            success:function(data){
-                var d = JSON.parse(data);
-                console.log(d);
-                if(d["status"] == "ok"){
-                    console.log("ok");
-                    console.log(t);
-                    t.parent().parent().remove();
-                    $("#status").text("删除成功！");
-                    setTimeout("empty_status()", 3000)
-                }
-            },
-            error:function(){
-         
-            }
-         });
-    });
-    $("#edit").click(function () {
-        $("#name").removeProp("readonly");
-        $("#ip").removeProp("readonly");
-        $("#port").removeProp("readonly");
-    });
-    $("#ok").click(function () {
-        var id = $("#id").val();
-        var name = $("#name").val();
-        var ip = $("#ip").val();
-        var port = $("#port").val();
-        $.ajax({
-            url:"/host_edit",
-            data:{id:id, name:name, ip:ip, port:port},
-            type:'POST',
-            success:function(data){
-                if(data=="ok"){
-                    $("#fix1").addClass("hid");
-                    $("#status").text("修改成功！");
-                    setTimeout("empty_status()", 3000)
-                }
-            },
-            error:function(){
-         
-            }
-         });
-    });
-    function empty_status() {
-        $("#status").text("");
-    }
-    setTimeout("empty_status()", 3000);
-    function exit() {
 
-    }
-    $("#menus").children().click(function () {
-        $(this).attr("class","menu-active").siblings().removeClass("menu-active")
-        if ($(this).attr("id") == "m1"){
-            $("#host_info").removeClass("hid");
-            $("#auth_option").addClass("hid");
-        }else {
-            $("#host_info").addClass("hid");
-            $("#auth_option").removeClass("hid");
-        }
-    });
-    $("#ad_user").submit(function () {
-        $.ajax({
-            url: "/add_user",
-            data: $("#ad_user").serialize(),
-            type: "POST",
-            success:function () {
-                alert("添加成功")
-            }
-        });
-        return false
-    });
-    $(".ff").click(function () {
-        $("#fix2").removeClass("hid").find("input").val($(this).prev("div").text());
-        var id = $(this).prev("div").attr("uid");
-        console.log(id);
-        $.ajax({
-            url:"/select_host",
-            type: "POST",
-            data:{"id":id},
-            success:function (data) {
-                console.log(typeof (data));
-                var all = data["all"];
-                var my = data["my"];
-                console.log(all);
-                console.log(my);
-                var s = document.createElement("select");
-                for(i in all){
-                    s.options.add(new Option(i.id, i.name));
-                }
-                document.getElementById("fix2").appendChild(s);
+{% endblock %}
+{% block script %}
 
-            }
-        });
-
-
-    });
-</script>
-</body>
-</html>
+{% endblock %}

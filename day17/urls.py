@@ -28,6 +28,11 @@ urlpatterns = [
     url(r'^host_del', views.host_del),
     url(r'^host_edit', views.host_edit),
     url(r'^select_host', views.select_host),
+    url(r'^permission', views.permission),
+    url(r'^host_group', views.host_group),
+    url(r'^get_hosts', views.get_hosts),
+    url(r'^test', views.test),
+
     # url(r'^index-(\d)-(\d).html', views.test),
 
 ]

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{#{% block style %}#}
+{#       <style>#}
+{#        .fix {#}
+{#            position: fixed;#}
+{#            top: 0;#}
+{#            left: 0;#}
+{#            right: 0;#}
+{#            bottom: 0;#}
+{#            background-color: #4b6075;#}
+{#            z-index: 999;#}
+{#        }#}
+{#        #fix1 input{#}
+{#        }#}
+{#        .hid{#}
+{#            display: none;#}
+{#        }#}
+{#    </style>#}
+{#{% endblock %}#}
+
+
+{% block center %}
+<div id="status" style="background-color: red">{{ status }}</div>
+    <div style="padding: 20px">
+{#        <div id="auth_options" >#}
+{#            <select id="u" class="form-control">#}
+{#                {% for i in user_list %}#}
+{#                    <option uid="{{ i.id }}">{{ i.name }} </option>#}
+{#                {% endfor %}#}
+{#            </select>#}
+
+        </div>
+    {{ obj.user }}
+        可管理主机:
+        <div>
+{#            <select id="hosts" multiple class="form-control">#}
+{##}
+{#            </select>#}
+        {{ obj.s1 }}
+        </div>
+        <br>
+
+        <div style="text-align: center;font-size: 30px;color: #3d3d3d">
+            <i class="fa fa-arrow-circle-up fa-fw"></i>
+            &nbsp;&nbsp;
+            <i class="fa fa-arrow-circle-down fa-fw"> </i>
+        </div>
+        <br>
+        不可管理:
+        <div>
+{#            <select id="all_hosts" multiple class="form-control"></select>#}
+        {{ obj.s2 }}
+        </div>
+        <button>确定</button>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+    $("#u").change(function () {
+        $("#hosts").empty();
+        $("#all_hosts").empty();
+        var u = $("#u option:selected").attr("uid");
+        $.ajax({
+            url:"/get_hosts",
+{#            type:"POST",#}
+            type:"GET",
+            data: {"uid": $("#u option:selected").val()},
+            success:function (data) {
+{#                alert(data);#}
+                var d = $.parseJSON(data);
+                var hosts = d.hosts;
+                var all_hosts = d.all_hosts;
+                console.log(hosts);
+                console.log(all_hosts);
+                if(hosts){
+                    for (var i=0; i< hosts.length ; i++){
+                    document.getElementById("hosts").options.add(new Option(hosts[i][2]+"-"+hosts[i][1], hosts[i][0]))
+                    }
+                }
+
+                if(all_hosts){
+                    for (var i=0; i< all_hosts.length ; i++) {
+                    document.getElementById("all_hosts").options.add(new Option(all_hosts[i][2]+"-"+all_hosts[i][1], all_hosts[i][0]))
+                    }
+                }
+
+
+                }
+
+
+        });
+
+    });
+
+
+    </script>
+{% endblock %}

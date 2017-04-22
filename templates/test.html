@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="aa()">a</button>
+
+<script src="/static/js/jquery.min.js"></script>
+<script>
+function aa() {
+    var a = [1, 'asf'];
+    $.ajax({
+        url: "/test",
+        type: "POST",
+        data: {'dd': JSON.stringify(a)},
+        success:function () {
+            alert("asf")
+        }
+    })
+}
+
+</script>
+</body>
+</html>

@@ -1,8 +1,39 @@
 from django.shortcuts import render, HttpResponse,render_to_response,redirect
 from hostmanager import models
 import json
+from django import forms
+from django.forms import widgets
+from django.forms import fields
+from django.forms import models as form_model
 
 # Create your views here.
+
+
+class User(forms.Form):
+    # 字段本身只能验证，内含插件生成html
+    name = fields.CharField(
+        widget=widgets.Input(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+        max_length=20,
+        error_messages={
+            'required': '用户名不能为空',
+            'min_length': '最小长度为6',
+        }
+    )
+    pwd = fields.CharField(
+        widget=widgets.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+        error_messages={
+            'required': '密码不能为空',
+        }
+    )
+
+    ugrup = fields.ChoiceField(
+        initial=1,
+        choices=models.User.type_choices,
+        widget=widgets.Select(attrs={'class': 'form-control'})
+
+    )
+    # print(models.User.type_choices)
+    # a = form_model.ModelChoiceField(queryset=models.User.objects.ugrup)
 
 
 def lg(func):  # 验证用户登录装饰器
@@ -17,14 +48,41 @@ def lg(func):  # 验证用户登录装饰器
 
 @lg
 def index(request):
+    # 首页
     uid = request.session.get("id")
     name = request.session.get("name")
     data = models.Host.objects.all()
-    data1 = models.User.objects.all()
-    return render(request, "index.html", {"host_list": data, "name": name, "user_list": data1})
+
+    return render(request, "index.html", {"host_list": data, "name": name, })
+
+
+class Host(forms.Form):
+    id = fields.IntegerField(
+        widget=widgets.Input(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+        required=True,
+    )
+    name = fields.CharField(
+        widget=widgets.Input(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+        error_messages={
+            'required': '用户名不能为空',
+        }
+    )
+    ip = fields.GenericIPAddressField(
+        widget=widgets.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+        error_messages={
+            'required': 'IP不能为空',
+        }
+    )
+    port = fields.IntegerField(
+        widget=widgets.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+        error_messages={
+            'required': '端口不能为空',
+        }
+    )
 
 
 def select_host(request):
+    # 主机信息
     id = request.POST.get("id")
     data = models.User.objects.filter(id=id).first()
     data_all = models.Host.objects.all()
@@ -32,35 +90,111 @@ def select_host(request):
 
 
 def add_user(request):
+    # 添加用户
     if request.method == "GET":
-        print("get")
+        obj = User()
+        return render(request, "adduser.html", {"obj": obj})
     else:
         name = request.POST.get("name")
         pwd = request.POST.get("pwd")
         utype = int(request.POST.get("type"))
-        g = models.UserGroup.objects.filter(id=utype).first()
-        print(name, pwd, type(utype), g)
-        ret = models.User.objects.create(name=name, pwd=pwd, ugrup=g)
-        print(ret)
+        models.User.objects.create(name=name, pwd=pwd, ugrup=utype)
         return HttpResponse("ok")
+
+
+class Permission(forms.Form):
+    # print(models.User.objects.all().values_list("id", "name"))
+    user = fields.ChoiceField(
+        initial=1,
+        choices=models.User.objects.all().values_list("id", "name"),
+        widget=widgets.Select(attrs={'class': 'form-control', "id": "u"}),
+    )
+    s1 = fields.ChoiceField(
+        widget=widgets.SelectMultiple(attrs={'class': 'form-control', "id": "hosts"}),
+    )
+    s2 = fields.ChoiceField(
+        widget=widgets.SelectMultiple(attrs={'class': 'form-control', "id": "all_hosts"}),
+    )
+
+
+def permission(request):
+    obj = Permission()
+    data1 = models.User.objects.all()
+    return render(request, "permission.html", {"user_list": data1, "obj": obj})
+
+
+def host_group(request):
+    return render(request, "hostgroup.html")
+
+
+def get_hosts(request):
+    if request.method == "GET":
+        a = int(request.GET.get("uid"))
+        print(a, type(a))
+        hosts = list(models.User.objects.filter(id=a).first().h.all().values_list("id", "ip", "name"))
+        all_host = list(models.Host.objects.all().values_list("id", "ip", "name"))
+        print(hosts, all_host)  # TODO
+        return HttpResponse(json.dumps({"hosts": hosts, "all_hosts": all_host}))
+    else:
+        print("eee")
+        hosts = []  # 有权限的主机列表
+        all_hosts = []  # 没有权限的主机列表
+        uid = request.POST.get("uid")
+        print(uid)
+        data = models.User.objects.filter(id=uid).first().h.all()
+        all_host = models.Host.objects.all()
+        for i in data:
+            temp = [i.id, i.ip, i.name]
+            hosts.append(temp)
+        for i in all_host:
+            temp = [i.id, i.ip, i.name]
+            if temp in hosts:
+                continue
+            all_hosts.append(temp)
+
+        return HttpResponse(json.dumps({"hosts": hosts, "all_hosts": all_hosts}))
+    # return HttpResponse(data)
+
+
+class Login(forms.Form):
+    # 字段本身只能验证，内含插件生成html
+    name = fields.CharField(
+        widget=widgets.Input(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+        max_length=20,
+        error_messages={
+            'required': '用户名不能为空',
+            'min_length': '最小长度为6',
+        }
+    )
+    pwd = fields.CharField(
+        widget=widgets.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+        error_messages={
+            'required': '密码不能为空',
+        }
+    )
 
 
 def login(request):
     # 登录
     if request.method == "GET":
-        return render(request, 'login.html')
+        obj = Login()
+        return render(request, 'login.html', {"obj": obj})
     else:
-        name = request.POST.get("name")
-        pwd = request.POST.get("pwd")
-        obj = models.User.objects.filter(name=name, pwd=pwd).first()
-        if obj:
-            # auth = obj.ugroup.id
-            request.session["auth"] = obj.ugrup.id
-            request.session["name"] = name
-            request.session["id"] = obj.id
-            return redirect("/index")
+        obj = Login(request.POST)
+        ret = obj.is_valid()  # 验证输入是否合格
+        if ret:
+            print(obj.cleaned_data)  # 打印用户输入数据
+            data = models.User.objects.filter(**obj.cleaned_data).first()
+            if data:
+                request.session["auth"] = data.ugrup
+                request.session["name"] = data.name
+                request.session["id"] = data.id
+                return redirect("/index")
+            else:
+                return render(request, 'login.html', {"obj": obj, "status": "用户名或密码错误"})
         else:
-            return render(request, 'login.html', {"status": "用户名或密码错误"})
+            print(obj.errors)
+            return render(request, 'login.html', {"obj": obj})
 
 
 def add_host(request):
@@ -102,3 +236,20 @@ def host_edit(request):
 def login_off(request):
     request.session.delete()
     return redirect("/login")
+
+
+class fm(forms.Form):
+    user = forms.CharField()
+    pwd = forms.CharField()
+    email = forms.EmailField()
+
+
+def test(request):
+    if request.method == "GET":
+        return render(request, "test.html")
+    else:
+        dd = request.POST.get("dd")
+        print(dd, type(dd))
+        a = json.loads(dd)
+        print(a, type(a))
+        return HttpResponse("ok")
