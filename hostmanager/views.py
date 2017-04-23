@@ -95,10 +95,13 @@ def add_user(request):
         obj = User()
         return render(request, "adduser.html", {"obj": obj})
     else:
-        name = request.POST.get("name")
-        pwd = request.POST.get("pwd")
-        utype = int(request.POST.get("type"))
-        models.User.objects.create(name=name, pwd=pwd, ugrup=utype)
+        obj = User(request.POST)
+        ret = obj.is_valid()
+        if ret:
+            models.User.objects.create(**obj.cleaned_data)
+            print('ok')
+        else:
+            print('err')
         return HttpResponse("ok")
 
 
@@ -129,30 +132,34 @@ def host_group(request):
 
 def get_hosts(request):
     if request.method == "GET":
+        a_hosts = []
         a = int(request.GET.get("uid"))
-        print(a, type(a))
+        # print(a, type(a))
         hosts = list(models.User.objects.filter(id=a).first().h.all().values_list("id", "ip", "name"))
         all_host = list(models.Host.objects.all().values_list("id", "ip", "name"))
-        print(hosts, all_host)  # TODO
-        return HttpResponse(json.dumps({"hosts": hosts, "all_hosts": all_host}))
-    else:
-        print("eee")
-        hosts = []  # 有权限的主机列表
-        all_hosts = []  # 没有权限的主机列表
-        uid = request.POST.get("uid")
-        print(uid)
-        data = models.User.objects.filter(id=uid).first().h.all()
-        all_host = models.Host.objects.all()
-        for i in data:
-            temp = [i.id, i.ip, i.name]
-            hosts.append(temp)
         for i in all_host:
-            temp = [i.id, i.ip, i.name]
-            if temp in hosts:
-                continue
-            all_hosts.append(temp)
-
-        return HttpResponse(json.dumps({"hosts": hosts, "all_hosts": all_hosts}))
+            if i not in hosts:
+                a_hosts.append(i)
+        # print(hosts, a_hosts)
+        return HttpResponse(json.dumps({"hosts": hosts, "all_hosts": a_hosts}))
+    # else:
+    #     print("eee")
+    #     hosts = []  # 有权限的主机列表
+    #     all_hosts = []  # 没有权限的主机列表
+    #     uid = request.POST.get("uid")
+    #     print(uid)
+    #     data = models.User.objects.filter(id=uid).first().h.all()
+    #     all_host = models.Host.objects.all()
+    #     for i in data:
+    #         temp = [i.id, i.ip, i.name]
+    #         hosts.append(temp)
+    #     for i in all_host:
+    #         temp = [i.id, i.ip, i.name]
+    #         if temp in hosts:
+    #             continue
+    #         all_hosts.append(temp)
+    #
+    #     return HttpResponse(json.dumps({"hosts": hosts, "all_hosts": all_hosts}))
     # return HttpResponse(data)
 
 

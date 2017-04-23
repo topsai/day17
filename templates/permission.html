@@ -1,61 +1,37 @@
 {% extends "base.html" %}
-{#{% block style %}#}
-{#       <style>#}
-{#        .fix {#}
-{#            position: fixed;#}
-{#            top: 0;#}
-{#            left: 0;#}
-{#            right: 0;#}
-{#            bottom: 0;#}
-{#            background-color: #4b6075;#}
-{#            z-index: 999;#}
-{#        }#}
-{#        #fix1 input{#}
-{#        }#}
-{#        .hid{#}
-{#            display: none;#}
-{#        }#}
-{#    </style>#}
-{#{% endblock %}#}
-
-
 {% block center %}
-<div id="status" style="background-color: red">{{ status }}</div>
-    <div style="padding: 20px">
-{#        <div id="auth_options" >#}
-{#            <select id="u" class="form-control">#}
-{#                {% for i in user_list %}#}
-{#                    <option uid="{{ i.id }}">{{ i.name }} </option>#}
-{#                {% endfor %}#}
-{#            </select>#}
-
-        </div>
-    {{ obj.user }}
+<div style="padding: 60px">
+    <div id="status" style="background-color: red">{{ status }}</div>
+    <form>
+        {{ obj.user }}
         可管理主机:
-        <div>
-{#            <select id="hosts" multiple class="form-control">#}
-{##}
-{#            </select>#}
         {{ obj.s1 }}
-        </div>
-        <br>
-
-        <div style="text-align: center;font-size: 30px;color: #3d3d3d">
-            <i class="fa fa-arrow-circle-up fa-fw"></i>
-            &nbsp;&nbsp;
-            <i class="fa fa-arrow-circle-down fa-fw"> </i>
+        <div style="text-align: center;font-size: 25px;color: #3d3d3d">
+            <i id="up" class="fa fa-arrow-circle-up fa-fw"></i>
+            <i id="down" class="fa fa-arrow-circle-down fa-fw"> </i>
         </div>
         <br>
         不可管理:
-        <div>
-{#            <select id="all_hosts" multiple class="form-control"></select>#}
         {{ obj.s2 }}
-        </div>
         <button>确定</button>
-    </div>
+    </form>
+</div>
 {% endblock %}
 {% block script %}
     <script>
+    $(function () {
+        $("#u").trigger("change");
+    });
+    $("#down").click(function () {
+        var s = $("#hosts option:selected");
+        s.clone().appendTo("#all_hosts");
+        s.remove()
+    });
+    $("#up").click(function () {
+        var s = $("#all_hosts option:selected");
+        s.clone().appendTo("#hosts");
+        s.remove()
+    });
     $("#u").change(function () {
         $("#hosts").empty();
         $("#all_hosts").empty();

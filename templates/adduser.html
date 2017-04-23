@@ -1,23 +1,35 @@
 {% extends "base.html" %}
 {% block center %}
 
-    <div id="add_user">
+    <div id="add_user" style="padding: 40px">
         <div id="ok" class="hid">添加成功</div>
         <form id="ad_user">
-{#            <div>用户名: <input name="name" class="form-control" type="text" placeholder="用户名"></div>#}
-{#            <div>密码 :<input name="pwd" class="form-control" type="password" placeholder="密码"></div>#}
-{#            <div>#}
-{#                用户类型 :#}
-{#                <select class="form-control" name="type">#}
-{#                    <option value="1">管理员</option>#}
-{#                    <option value="2">普通用户</option>#}
-{#                </select>#}
-{#            </div>#}
-            {{ obj.name }}
-            {{ obj.pwd }}
-            {{ obj.ugrup }}
+            {{ obj.name }}<br>
+            {{ obj.pwd }}<br>
+            {{ obj.ugrup }}<br>
             <button class="btn btn-outline btn-primary btn-lg btn-block">确定</button>
         </form>
 
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+    $("#ad_user").children("button").click(
+        $.ajax({
+        url:"/add_user",
+        type:"POST",
+        data:$("#ad_user").serialize(),
+        success:function () {
+                return false
+            },
+
+
+        })
+        event.stopPropagation()
+
+    );
+
+
+    </script>
 {% endblock %}
