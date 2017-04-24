@@ -7,7 +7,7 @@
             {{ obj.name }}<br>
             {{ obj.pwd }}<br>
             {{ obj.ugrup }}<br>
-            <button class="btn btn-outline btn-primary btn-lg btn-block">确定</button>
+            <button type="submit" class="btn btn-outline btn-primary btn-lg btn-block">确定</button>
         </form>
 
     </div>
@@ -15,20 +15,19 @@
 
 {% block script %}
     <script>
-    $("#ad_user").children("button").click(
+    $("#ad_user").children("button").click(function () {
+        console.log($("#ad_user").serialize());
+
         $.ajax({
         url:"/add_user",
         type:"POST",
         data:$("#ad_user").serialize(),
         success:function () {
-                return false
-            },
-
-
-        })
-        event.stopPropagation()
-
-    );
+                console.log("ok")
+            }
+        });
+        return false
+        });
 
 
     </script>
