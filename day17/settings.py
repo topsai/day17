@@ -48,6 +48,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'hostmanager.tests.M1',
+    'hostmanager.tests.M2',
 ]
 
 ROOT_URLCONF = 'day17.urls'
