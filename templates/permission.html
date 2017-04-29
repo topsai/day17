@@ -2,7 +2,7 @@
 {% block center %}
 <div style="padding: 60px">
     <div id="status" style="background-color: red">{{ status }}</div>
-    <form>
+    <form id="hosts_permission">
         {{ obj.user }}
         可管理主机:
         {{ obj.s1 }}
@@ -13,12 +13,34 @@
         <br>
         不可管理:
         {{ obj.s2 }}
-        <button>确定</button>
+        <button type="submit">确定</button>
     </form>
 </div>
 {% endblock %}
 {% block script %}
     <script>
+    $("#hosts_permission").children("button").click(function () {
+{#        console.log($("#hosts option").each($(this).value()))#}
+        var h = [];
+        $("#hosts option").each(function () {
+            h.push(($(this).val(), $(this).text()));
+            $(this).attr("selected", true);
+        });
+        var dd = $("#hosts").serialize();
+        $.ajax({
+            url:"/permission",
+            type:"POST",
+            data:$("#hosts_permission").serialize(),
+            traditional:true,  //data中允许放置列表
+            success:function () {
+
+            }
+        });
+        $("#hosts option").each(function () {
+                    $(this).attr("selected", "");
+                });
+        return false
+    });
     $(function () {
         $("#u").trigger("change");
     });

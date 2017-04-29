@@ -99,10 +99,9 @@ def add_user(request):
         ret = obj.is_valid()
         if ret:
             models.User.objects.create(**obj.cleaned_data)
-            print('ok')
+            return HttpResponse("ok")
         else:
-            print('err')
-        return HttpResponse("ok")
+            return HttpResponse("err")
 
 
 class Permission(forms.Form):
@@ -116,14 +115,30 @@ class Permission(forms.Form):
         widget=widgets.SelectMultiple(attrs={'class': 'form-control', "id": "hosts"}),
     )
     s2 = fields.ChoiceField(
+        required=True,
         widget=widgets.SelectMultiple(attrs={'class': 'form-control', "id": "all_hosts"}),
     )
 
+    def __init__(self, *args, **kwargs):
+        super(Permission, self).__init__(*args, **kwargs)
+        self.fields["user"].choices = models.User.objects.all().values_list("id", "name")
+
 
 def permission(request):
-    obj = Permission()
-    data1 = models.User.objects.all()
-    return render(request, "permission.html", {"user_list": data1, "obj": obj})
+    if request.method == "GET":
+        obj = Permission()
+        data1 = models.User.objects.all()
+        return render(request, "permission.html", {"user_list": data1, "obj": obj})
+    else:
+        print(request.POST)
+        a = {'user': [1], 's1': [1]}
+        obj = Permission(a)
+        ret = obj.is_valid()
+        if ret:
+            print('ok')
+        else:
+            print(obj.errors)
+
 
 
 def host_group(request):
