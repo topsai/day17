@@ -123,6 +123,7 @@ class Permission(forms.Form):
         super(Permission, self).__init__(*args, **kwargs)
         self.fields["user"].choices = models.User.objects.all().values_list("id", "name")
 
+
 def permission(request):
     if request.method == "GET":
         obj = Permission()

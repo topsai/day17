@@ -174,164 +174,164 @@
     <script src="/static/sb2/vendor/datatables-responsive/dataTables.responsive.js"></script>
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-{#    <script>#}
-{#     function fix2_exit() {#}
-{#        $("#fix2").addClass("hid")#}
-{#    }#}
-{#    function add_u() {#}
-{#        $("#add_user").removeClass("hid").siblings().addClass("hid")#}
-{#    }#}
-{#    function auth_p() {#}
-{#        $("#auth_options").removeClass("hid").siblings().addClass("hid")#}
-{#    }#}
-{#    function host_g() {#}
-{#        $("#host_group").removeClass("hid").siblings().addClass("hid")#}
-{#    }#}
-{#    function a_host() {#}
-{#        console.log("dasd")#}
-{#        $("#fix").removeClass("hid")#}
-{#    };#}
-{#    $("#quit").click(function () {#}
-{#        $("#fix").addClass("hid")#}
-{#    });#}
-{#    $("#close").click(function () {#}
-{#        $("#id").val("");#}
-{#        $("#name").val("");#}
-{#        $("#ip").val("");#}
-{#        $("#port").val("");#}
-{#        $("#fix1").addClass("hid");#}
-{#    });#}
-{#    $(".host_info").click(function () {#}
-{#        console.log($(this).attr("host_id"));#}
-{#        var id = $(this).attr("host_id");#}
-{#        $.ajax({#}
-{#            url:"/host_info",#}
-{#            data:{id:id},#}
-{#            type:'POST',#}
-{#            success:function(data){#}
-{#                var d = JSON.parse(data);#}
-{#                $("#id").val(d["id"]).prop("readonly", true);#}
-{#                $("#name").val(d["name"]).prop("readonly", true);#}
-{#                $("#ip").val(d["ip"]).prop("readonly", true);#}
-{#                $("#port").val(d["port"]).prop("readonly", true);#}
-{#                $("#fix1").removeClass("hid");#}
-{#            },#}
-{#            error:function(){#}
-{#         #}
-{#            }#}
-{#         });#}
-{#    });#}
-{#    $(".host_del").click(function () {#}
-{#        console.log($(this).attr("host_id"));#}
-{#        var id = $(this).attr("host_id");#}
-{#        var t = $(this);#}
-{#        $.ajax({#}
-{#            url:"/host_del",#}
-{#            data:{id:id},#}
-{#            type:'POST',#}
-{#            success:function(data){#}
-{#                var d = JSON.parse(data);#}
-{#                console.log(d);#}
-{#                if(d["status"] == "ok"){#}
-{#                    console.log("ok");#}
-{#                    console.log(t);#}
-{#                    t.parent().parent().remove();#}
-{#                    $("#status").text("删除成功！");#}
-{#                    setTimeout("empty_status()", 3000)#}
-{#                }#}
-{#            },#}
-{#            error:function(){#}
-{#         #}
-{#            }#}
-{#         });#}
-{#    });#}
-{#    $("#edit").click(function () {#}
-{#        $("#name").removeProp("readonly");#}
-{#        $("#ip").removeProp("readonly");#}
-{#        $("#port").removeProp("readonly");#}
-{#    });#}
-{#    $("#ok").click(function () {#}
-{#        var id = $("#id").val();#}
-{#        var name = $("#name").val();#}
-{#        var ip = $("#ip").val();#}
-{#        var port = $("#port").val();#}
-{#        $.ajax({#}
-{#            url:"/host_edit",#}
-{#            data:{id:id, name:name, ip:ip, port:port},#}
-{#            type:'POST',#}
-{#            success:function(data){#}
-{#                if(data=="ok"){#}
-{#                    $("#fix1").addClass("hid");#}
-{#                    $("#status").text("修改成功！");#}
-{#                    setTimeout("empty_status()", 3000)#}
-{#                }#}
-{#            },#}
-{#            error:function(){#}
-{#         #}
-{#            }#}
-{#         });#}
-{#    });#}
-{#    function empty_status() {#}
-{#        $("#status").text("");#}
-{#    }#}
-{#    setTimeout("empty_status()", 3000);#}
-{#    function exit() {#}
-{##}
-{#    }#}
-{#    $("#menus").children().click(function () {#}
-{#        $(this).attr("class","menu-active").siblings().removeClass("menu-active")#}
-{#        if ($(this).attr("id") == "m1"){#}
-{#            $("#host_info").removeClass("hid");#}
-{#            $("#auth_option").addClass("hid");#}
-{#        }else {#}
-{#            $("#host_info").addClass("hid");#}
-{#            $("#auth_option").removeClass("hid");#}
-{#        }#}
-{#    });#}
-{#    $("#ad_user").submit(function () {#}
-{#        $.ajax({#}
-{#            url: "/add_user",#}
-{#            data: $("#ad_user").serialize(),#}
-{#            type: "POST",#}
-{#            success:function () {#}
-{#                alert("添加成功")#}
-{#            }#}
-{#        });#}
-{#        return false#}
-{#    });#}
-{#    $(".ff").click(function () {#}
-{#        $("#fix2").removeClass("hid").find("input").val($(this).prev("div").text());#}
-{#        var id = $(this).prev("div").attr("uid");#}
-{#        console.log(id);#}
-{#        $.ajax({#}
-{#            url:"/select_host",#}
-{#            type: "POST",#}
-{#            data:{"id":id},#}
-{#            success:function (data) {#}
-{#                console.log(typeof (data));#}
-{#                var all = data["all"];#}
-{#                var my = data["my"];#}
-{#                console.log(all);#}
-{#                console.log(my);#}
-{#                var s = document.createElement("select");#}
-{#                for(i in all){#}
-{#                    s.options.add(new Option(i.id, i.name));#}
-{#                }#}
-{#                document.getElementById("fix2").appendChild(s);#}
-{##}
-{#            }#}
-{#        });#}
-{##}
-{##}
-{#    });#}
-{#    $(document).ready(function() {#}
-{#        $('#dataTables-example').DataTable({#}
-{#            responsive: true#}
-{#        });#}
-{#    });#}
-{##}
-{##}
-{#</script>#}
+    <script>
+     function fix2_exit() {
+        $("#fix2").addClass("hid")
+    }
+    function add_u() {
+        $("#add_user").removeClass("hid").siblings().addClass("hid")
+    }
+    function auth_p() {
+        $("#auth_options").removeClass("hid").siblings().addClass("hid")
+    }
+    function host_g() {
+        $("#host_group").removeClass("hid").siblings().addClass("hid")
+    }
+    function a_host() {
+        console.log("dasd")
+        $("#fix").removeClass("hid")
+    };
+    $("#quit").click(function () {
+        $("#fix").addClass("hid")
+    });
+    $("#close").click(function () {
+        $("#id").val("");
+        $("#name").val("");
+        $("#ip").val("");
+        $("#port").val("");
+        $("#fix1").addClass("hid");
+    });
+    $(".host_info").click(function () {
+        console.log($(this).attr("host_id"));
+        var id = $(this).attr("host_id");
+        $.ajax({
+            url:"/host_info",
+            data:{id:id},
+            type:'POST',
+            success:function(data){
+                var d = JSON.parse(data);
+                $("#id").val(d["id"]).prop("readonly", true);
+                $("#name").val(d["name"]).prop("readonly", true);
+                $("#ip").val(d["ip"]).prop("readonly", true);
+                $("#port").val(d["port"]).prop("readonly", true);
+                $("#fix1").removeClass("hid");
+            },
+            error:function(){
+         
+            }
+         });
+    });
+    $(".host_del").click(function () {
+        console.log($(this).attr("host_id"));
+        var id = $(this).attr("host_id");
+        var t = $(this);
+        $.ajax({
+            url:"/host_del",
+            data:{id:id},
+            type:'POST',
+            success:function(data){
+                var d = JSON.parse(data);
+                console.log(d);
+                if(d["status"] == "ok"){
+                    console.log("ok");
+                    console.log(t);
+                    t.parent().parent().remove();
+                    $("#status").text("删除成功！");
+                    setTimeout("empty_status()", 3000)
+                }
+            },
+            error:function(){
+         
+            }
+         });
+    });
+    $("#edit").click(function () {
+        $("#name").removeProp("readonly");
+        $("#ip").removeProp("readonly");
+        $("#port").removeProp("readonly");
+    });
+    $("#ok").click(function () {
+        var id = $("#id").val();
+        var name = $("#name").val();
+        var ip = $("#ip").val();
+        var port = $("#port").val();
+        $.ajax({
+            url:"/host_edit",
+            data:{id:id, name:name, ip:ip, port:port},
+            type:'POST',
+            success:function(data){
+                if(data=="ok"){
+                    $("#fix1").addClass("hid");
+                    $("#status").text("修改成功！");
+                    setTimeout("empty_status()", 3000)
+                }
+            },
+            error:function(){
+         
+            }
+         });
+    });
+    function empty_status() {
+        $("#status").text("");
+    }
+    setTimeout("empty_status()", 3000);
+    function exit() {
+
+    }
+    $("#menus").children().click(function () {
+        $(this).attr("class","menu-active").siblings().removeClass("menu-active")
+        if ($(this).attr("id") == "m1"){
+            $("#host_info").removeClass("hid");
+            $("#auth_option").addClass("hid");
+        }else {
+            $("#host_info").addClass("hid");
+            $("#auth_option").removeClass("hid");
+        }
+    });
+    $("#ad_user").submit(function () {
+        $.ajax({
+            url: "/add_user",
+            data: $("#ad_user").serialize(),
+            type: "POST",
+            success:function () {
+                alert("添加成功")
+            }
+        });
+        return false
+    });
+    $(".ff").click(function () {
+        $("#fix2").removeClass("hid").find("input").val($(this).prev("div").text());
+        var id = $(this).prev("div").attr("uid");
+        console.log(id);
+        $.ajax({
+            url:"/select_host",
+            type: "POST",
+            data:{"id":id},
+            success:function (data) {
+                console.log(typeof (data));
+                var all = data["all"];
+                var my = data["my"];
+                console.log(all);
+                console.log(my);
+                var s = document.createElement("select");
+                for(i in all){
+                    s.options.add(new Option(i.id, i.name));
+                }
+                document.getElementById("fix2").appendChild(s);
+
+            }
+        });
+
+
+    });
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+            responsive: true
+        });
+    });
+
+
+</script>
 {% block script %}
 {% endblock %}
 </body>
